@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction</title>
+    <!-- Links the advanced variable-based design stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=66">
+</head>
+<body>
+
+    <div class="pointer-torch" id="pointerTorch"></div>
+
+    <!-- Viewport Fixed Theme Toggle Menu (Top-Right Screen Corner) -->
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round">
+                <span class="icon sun">☀️</span>
+                <span class="icon moon">🌙</span>
+            </div>
+        </label>
+    </div>
+
+    <!-- Main Glassmorphism UI Application Shell Container -->
+    <div class="container">
+        <h1>🏠 House Price Estimation</h1>
+        <p>Provide the property parameters below to calculate evaluation</p>
+
+        <form id="predictionForm" novalidate>
+            <!-- Responsive Grid Layout Infrastructure -->
+            <div class="form-grid">
+                
+                <!-- City Dropdown Input Column -->
+                <div class="form-group" id="cityGroup">
+                    <label for="city">City</label>
+                    <select id="city" required>
+                        <option value="" disabled selected class="placeholder-option">Set City</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Coimbatore">Coimbatore</option>
+                        <option value="Madurai">Madurai</option>
+                        <option value="Trichy">Trichy</option>
+                        <option value="Salem">Salem</option>
+                    </select>
+                </div>
+
+                <!-- Locality Area Dropdown Input Column -->
+                <div class="form-group" id="localityGroup">
+                    <label for="locality">Locality Area</label>
+                    <select id="locality" required disabled>
+                        <option value="" disabled selected class="placeholder-option">Select City First</option>
+                    </select>
+                </div>
+
+                <!-- Merged Building Area Module (Single Slider, Dual Synchronized Manual Inputs) -->
+                <div class="form-group">
+                    <div class="label-header">
+                        <label for="buildingArea">Building Area</label>
+                        <div class="dual-input-wrapper">
+                            <!-- Recalibrated max to 43560 Sq.Ft and 100 Cents -->
+                            <input type="number" min="100" max="43560" value="1200" id="buildingAreaNum" class="manual-area-input" aria-label="Manual building area input Sq.Ft">
+                            <span class="unit-label">Sq.Ft</span>
+                            <input type="number" min="0.23" max="100.00" step="0.01" value="2.75" id="buildingAreaCentsNum" class="manual-area-input" aria-label="Manual building area input Cents">
+                            <span class="unit-label">Cents</span>
+                        </div>
+                    </div>
+                    <!-- Slider track max configured to match 43560 Sq.Ft bounds -->
+                    <input type="range" min="100" max="43560" step="50" value="1200" id="buildingArea" class="area-slider">
+                </div>
+
+                <!-- Merged Total Land Area Module (Single Slider, Dual Synchronized Manual Inputs) -->
+                <div class="form-group">
+                    <div class="label-header">
+                        <label for="totalArea">Total Land Area</label>
+                        <div class="dual-input-wrapper">
+                            <!-- Recalibrated max to 43560 Sq.Ft and 100 Cents -->
+                            <input type="number" min="100" max="43560" value="2000" id="totalAreaNum" class="manual-area-input" aria-label="Manual total area input Sq.Ft">
+                            <span class="unit-label">Sq.Ft</span>
+                            <input type="number" min="0.23" max="100.00" step="0.01" value="4.59" id="totalAreaCentsNum" class="manual-area-input" aria-label="Manual total area input Cents">
+                            <span class="unit-label">Cents</span>
+                        </div>
+                    </div>
+                    <!-- Slider track max configured to match 43560 Sq.Ft bounds -->
+                    <input type="range" min="100" max="43560" step="100" value="2000" id="totalArea" class="area-slider">
+                </div>
+
+                <!-- Numerical Input Specifications Mapping Fields -->
+                <div class="form-group">
+                    <label for="bedrooms">Bedrooms</label>
+                    <input type="number" id="bedrooms" min="1" max="20" placeholder="e.g. 3" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bathrooms">Bathrooms</label>
+                    <input type="number" id="bathrooms" min="1" max="20" placeholder="e.g. 2" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="floors">Total Floors</label>
+                    <input type="number" id="floors" min="1" max="10" placeholder="e.g. 2" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="parking">Parking Slots</label>
+                    <input type="number" id="parking" min="0" max="10" placeholder="e.g. 1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age of Building (Years)</label>
+                    <input type="number" id="age" min="0" max="150" placeholder="New built enter 0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="furnishing">Furnishing Status</label>
+                    <select id="furnishing" required>
+                        <option value="" disabled selected class="placeholder-option">Set Furnishing</option>
+                        <option value="Unfurnished">Unfurnished</option>
+                        <option value="Semi-Furnished">Semi-Furnished</option>
+                        <option value="Fully Furnished">Fully Furnished</option>
+                    </select>
+                </div>
+                
+            </div> <!-- FIXED: Form grid container now closes cleanly here after ALL input columns are complete -->
+
+            <!-- Interactive Action Button Cluster Rows -->
+            <div class="form-actions-row">
+                <button type="button" id="clearFieldsBtn" class="clear-icon-btn" aria-label="Clear all form fields">
+                    <!-- FIXED: Namespace link restored to standard W3C path parameters -->
+                    <svg xmlns="http://w3.org" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                </button>
+                <button type="submit" id="submitBtn">Predict Price</button>
+            </div>
+        </form>
+
+        <!-- Dynamic Output Target Zone for Results and Errors -->
+        <div id="result"></div>
+
+        <!-- NEW: Interactive Analytics & Valuation Metrics Core Sub-Dashboard Container -->
+        <div id="analyticsSection" class="analytics-container hidden-analytics">
+            <div class="metrics-grid">
+                <div class="metric-badge-card">
+                    <span class="metric-badge-title">Unit Valuation Rate</span>
+                    <h4 id="pricePerSqft">₹0 / Sq.Ft</h4>
+                </div>
+                <div class="metric-badge-card">
+                    <span class="metric-badge-title">Asset Market Tier</span>
+                    <h4 id="propertyTier">Standard</h4>
+                </div>
+            </div>
+        </div>
+    </div> <!-- This closes the .container card wrapper perfectly -->
+
+    <!-- Modern Floating Glassmorphic Scroll-to-Top Button -->
+    <button id="scrollToTopBtn" class="scroll-to-top" aria-label="Scroll to top">
+        <svg xmlns="http://w3.org" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <!-- High-Performance Chart.js Core Library Dependency (Deferred to maximize initial page reload speed) -->
+    <script src="https://jsdelivr.net" defer></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=66" defer></script>
+</body>
+</html>
